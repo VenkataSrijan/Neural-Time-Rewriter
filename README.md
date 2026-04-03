@@ -75,6 +75,8 @@ the gold standard benchmark for cardiac ML research.
 ---
 
 ## 🏗️ System Architecture
+
+```
 User Input
 │
 ▼
@@ -93,7 +95,7 @@ Flask Backend (app.py)
 │
 └──► Response to Frontend
 └── Original vs Counterfactual comparison
-
+```
 ---
 
 ## 🧬 Technical Architecture
@@ -119,30 +121,32 @@ Flask Backend (app.py)
 ---
 
 ## 📁 Project Structure
+```
 NNDL project/
 │
 ├── backend/
-│   ├── app.py              # Flask REST API
-│   ├── preprocess.py       # Data loading and scaling
-│   ├── model.py            # RandomForest classifier
-│   ├── vae.py              # Variational Autoencoder
-│   ├── counterfactual.py   # What-if scenario engine
-│   ├── train.py            # One-time training script
+│   ├── app.py                  # Flask REST API
+│   ├── preprocess.py           # Data loading and scaling
+│   ├── model.py                # RandomForest classifier
+│   ├── vae.py                  # Variational Autoencoder
+│   ├── counterfactual.py       # What-if scenario engine
+│   ├── train.py                # One-time training script
 │   └── models/
-│       ├── classifier.pkl  # Saved RandomForest
-│       ├── vae.pt          # Saved VAE weights
-│       └── scaler.pkl      # Saved StandardScaler
+│       ├── classifier.pkl      # Saved RandomForest
+│       ├── vae.pt              # Saved VAE weights
+│       └── scaler.pkl          # Saved StandardScaler
 │
 ├── data/
-│   └── heart.csv           # UCI Cleveland Heart Disease dataset
+│   └── heart.csv               # UCI Cleveland Heart Disease dataset
 │
 ├── frontend/
-│   ├── index.html          # Main UI
-│   ├── style.css           # Dark theme styling
-│   └── script.js           # API calls and UI logic
+│   ├── index.html              # Main UI
+│   ├── style.css               # Dark theme styling
+│   └── script.js               # API calls and UI logic
 │
 ├── requirements.txt
 └── README.md
+```
 
 ---
 
