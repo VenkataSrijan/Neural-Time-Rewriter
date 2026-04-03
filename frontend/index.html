@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Neural Time Rewriter</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Neural Time Rewriter</h1>
+  <p>Counterfactual Deep Learning System for Decision Analysis</p>
+  <div class="header-badges">
+    <span class="badge">RandomForest Classifier</span>
+    <span class="badge">Variational Autoencoder</span>
+    <span class="badge">Counterfactual AI</span>
+    <span class="badge">Heart Disease Dataset</span>
+  </div>
+</header>
+
+<!-- Medical Disclaimer -->
+<div style="
+  background: #1a1200;
+  border: 1px solid #ca8a0444;
+  border-left: 3px solid #ca8a04;
+  color: #fbbf24;
+  font-size: 0.82rem;
+  padding: 12px 24px;
+  text-align: center;
+  line-height: 1.6;
+">
+  ⚠️ <strong>Research Tool Only</strong> — This system uses the real UCI Heart Disease Dataset
+  (Cleveland Clinic, 302 patients). Predictions are based on statistical patterns and are
+  <strong>not a substitute for medical diagnosis</strong>. Counterfactual suggestions may not
+  always align with clinical expectations due to dataset size limitations.
+</div>
+
+<main>
+
+  <!-- STEP 1 -->
+  <!-- STEP 1 -->
+<section class="card" id="section-load">
+  <div class="step-indicator">
+    <div class="step-num">1</div>
+    <div class="step-title">Load a Patient</div>
+  </div>
+  <p>Load a random patient from the dataset, or enter values manually.</p>
+
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <button id="btn-sample" onclick="loadSample()">🔀 Load Random Patient</button>
+    <button onclick="toggleManualForm()" style="background:linear-gradient(135deg,#6d28d9,#5b21b6);">
+      ✏️ Enter Manually
+    </button>
+  </div>
+
+  <!-- MANUAL INPUT FORM -->
+  <div id="manual-form" style="display:none; margin-top:24px;">
+
+    <p style="color:#fbbf24; font-size:0.82rem; margin-bottom:16px;">
+      ⚠️ Enter real clinical values. Normal ranges are shown as hints.
+    </p>
+
+    <div class="grid" id="input-grid">
+
+      <!-- Age -->
+      <div class="grid-item">
+        <div class="label">Age (years)</div>
+        <input class="manual-input" type="number" id="inp-age"
+               min="1" max="120" placeholder="e.g. 55"
+               style="width:100%;margin-top:6px;padding:6px 10px;
+                      background:#0d1117;border:1px solid #1e3a5f;
+                      color:#e0e0e0;border-radius:6px;font-size:1rem;"/>
+        <div class="hint">Range: 29–77 in dataset</div>
+      </div>
+
+      <!-- Sex -->
+      <div class="grid-item">
+        <div class="label">Sex</div>
+        <select class="manual-input" id="inp-sex"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="1">Male (1)</option>
+          <option value="0">Female (0)</option>
+        </select>
+      </div>
+
+      <!-- Chest Pain -->
+      <div class="grid-item">
+        <div class="label">Chest Pain Type</div>
+        <select class="manual-input" id="inp-cp"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">0 — No pain</option>
+          <option value="1">1 — Typical angina</option>
+          <option value="2">2 — Atypical angina</option>
+          <option value="3">3 — Non-anginal</option>
+        </select>
+      </div>
+
+      <!-- Resting BP -->
+      <div class="grid-item">
+        <div class="label">Resting Blood Pressure</div>
+        <input class="manual-input" type="number" id="inp-trestbps"
+               min="50" max="250" placeholder="e.g. 130"
+               style="width:100%;margin-top:6px;padding:6px 10px;
+                      background:#0d1117;border:1px solid #1e3a5f;
+                      color:#e0e0e0;border-radius:6px;font-size:1rem;"/>
+        <div class="hint">Normal: 90–120 mmHg</div>
+      </div>
+
+      <!-- Cholesterol -->
+      <div class="grid-item">
+        <div class="label">Cholesterol</div>
+        <input class="manual-input" type="number" id="inp-chol"
+               min="100" max="600" placeholder="e.g. 240"
+               style="width:100%;margin-top:6px;padding:6px 10px;
+                      background:#0d1117;border:1px solid #1e3a5f;
+                      color:#e0e0e0;border-radius:6px;font-size:1rem;"/>
+        <div class="hint">Normal: &lt;200 mg/dl</div>
+      </div>
+
+      <!-- Fasting Blood Sugar -->
+      <div class="grid-item">
+        <div class="label">Fasting Blood Sugar &gt;120</div>
+        <select class="manual-input" id="inp-fbs"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">No (0)</option>
+          <option value="1">Yes (1)</option>
+        </select>
+      </div>
+
+      <!-- Resting ECG -->
+      <div class="grid-item">
+        <div class="label">Resting ECG</div>
+        <select class="manual-input" id="inp-restecg"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">0 — Normal</option>
+          <option value="1">1 — ST-T abnormality</option>
+          <option value="2">2 — LV hypertrophy</option>
+        </select>
+      </div>
+
+      <!-- Max Heart Rate -->
+      <div class="grid-item">
+        <div class="label">Max Heart Rate</div>
+        <input class="manual-input" type="number" id="inp-thalach"
+               min="50" max="250" placeholder="e.g. 150"
+               style="width:100%;margin-top:6px;padding:6px 10px;
+                      background:#0d1117;border:1px solid #1e3a5f;
+                      color:#e0e0e0;border-radius:6px;font-size:1rem;"/>
+        <div class="hint">Normal: 60–200 bpm</div>
+      </div>
+
+      <!-- Exercise Angina -->
+      <div class="grid-item">
+        <div class="label">Exercise Angina</div>
+        <select class="manual-input" id="inp-exang"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">No (0)</option>
+          <option value="1">Yes (1)</option>
+        </select>
+      </div>
+
+      <!-- ST Depression -->
+      <div class="grid-item">
+        <div class="label">ST Depression (Oldpeak)</div>
+        <input class="manual-input" type="number" id="inp-oldpeak"
+               min="0" max="10" step="0.1" placeholder="e.g. 1.5"
+               style="width:100%;margin-top:6px;padding:6px 10px;
+                      background:#0d1117;border:1px solid #1e3a5f;
+                      color:#e0e0e0;border-radius:6px;font-size:1rem;"/>
+        <div class="hint">Normal: 0 – 2.0</div>
+      </div>
+
+      <!-- Slope -->
+      <div class="grid-item">
+        <div class="label">Slope</div>
+        <select class="manual-input" id="inp-slope"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">0 — Upsloping</option>
+          <option value="1">1 — Flat</option>
+          <option value="2">2 — Downsloping</option>
+        </select>
+      </div>
+
+      <!-- Major Vessels -->
+      <div class="grid-item">
+        <div class="label">Major Vessels (ca)</div>
+        <select class="manual-input" id="inp-ca"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <!-- Thal -->
+      <div class="grid-item">
+        <div class="label">Thal</div>
+        <select class="manual-input" id="inp-thal"
+                style="width:100%;margin-top:6px;padding:6px 10px;
+                       background:#0d1117;border:1px solid #1e3a5f;
+                       color:#e0e0e0;border-radius:6px;font-size:0.9rem;">
+          <option value="">-- Select --</option>
+          <option value="0">0 — Normal</option>
+          <option value="1">1 — Fixed defect</option>
+          <option value="2">2 — Reversible defect</option>
+          <option value="3">3 — Unknown</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Error message -->
+    <div id="form-error" style="display:none; color:#f87171;
+         font-size:0.85rem; margin-top:8px;"></div>
+
+    <button onclick="submitManual()"
+            style="margin-top:16px;background:linear-gradient(135deg,#6d28d9,#5b21b6);">
+      ✅ Use These Values
+    </button>
+
+  </div>
+</section>
+
+  <!-- STEP 2 -->
+  <section class="card hidden" id="section-patient">
+    <div class="step-indicator">
+      <div class="step-num">2</div>
+      <div class="step-title">Patient Profile</div>
+    </div>
+    <p>These are the clinical features of the loaded patient.</p>
+    <div id="patient-grid" class="grid"></div>
+    <button id="btn-predict" onclick="predictOutcome()">🔍 Predict Outcome</button>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="card hidden" id="section-prediction">
+    <div class="step-indicator">
+      <div class="step-num">3</div>
+      <div class="step-title">Prediction Result</div>
+    </div>
+    <div id="prediction-box" class="result-box"></div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="card hidden" id="section-whatif">
+    <div class="step-indicator">
+      <div class="step-num">4</div>
+      <div class="step-title">Ask "What If?"</div>
+    </div>
+    <p>Select one clinical feature, change its value, and see how the prediction shifts.</p>
+    <div class="whatif-controls">
+      <div>
+        <label for="feature-select">Feature to change:</label>
+        <select id="feature-select" onchange="onFeatureChange()">
+          <option value="">-- Select a feature --</option>
+          <option value="age">Age</option>
+          <option value="trestbps">Resting Blood Pressure</option>
+          <option value="chol">Cholesterol</option>
+          <option value="thalach">Max Heart Rate</option>
+          <option value="oldpeak">ST Depression (Oldpeak)</option>
+          <option value="sex">Sex (0=Female, 1=Male)</option>
+          <option value="cp">Chest Pain Type (0–3)</option>
+          <option value="fbs">Fasting Blood Sugar &gt;120 (0/1)</option>
+          <option value="restecg">Resting ECG (0–2)</option>
+          <option value="exang">Exercise Angina (0/1)</option>
+          <option value="slope">Slope (0–2)</option>
+          <option value="ca">Major Vessels (0–3)</option>
+          <option value="thal">Thal (0–3)</option>
+        </select>
+      </div>
+      <div id="value-control" class="hidden">
+        <label id="value-label">New value:</label>
+        <input type="number" id="new-value" step="1"/>
+        <div id="current-val"></div>
+      </div>
+      <div>
+        <button id="btn-cf" class="hidden" onclick="generateCounterfactual()">
+          ⚡ Generate Counterfactual
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="card hidden" id="section-comparison">
+    <div class="step-indicator">
+      <div class="step-num">5</div>
+      <div class="step-title">Original vs Counterfactual</div>
+    </div>
+    <div class="comparison">
+      <div class="comp-box" id="comp-original"></div>
+      <div class="arrow-col"><div class="arrow">→</div></div>
+      <div class="comp-box" id="comp-cf"></div>
+    </div>
+    <div id="outcome-message"></div>
+    <div id="changes-list"></div>
+  </section>
+
+</main>
+
+<footer>
+  Neural Time Rewriter · Built with PyTorch, Scikit-learn & Flask · Team: Srijan, Ashvith, Bharath
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
